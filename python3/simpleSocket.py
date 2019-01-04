@@ -3,7 +3,7 @@
 import socket
 
 hostIP = input("Host IP: ")
-hostPort = int(input("Host Port: ")
+hostPort = int(input("Host Port: "))
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((hostIP, hostPort))
