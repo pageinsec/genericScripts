@@ -15,6 +15,74 @@ target = ""
 upload_destination = ""
 port = 0
 
+# Client code
+def client_sender(buffer):
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        # Connect to target host
+        client.connect((target,port))
+        if len(buffer):
+            client.send(buffer)
+        while True:
+            # Wait for data back
+            recv_len = 1
+            response = ""
+
+            while recv_len:
+                data = client.recv(4096)
+                recv_len = len(data)
+                response+= data
+
+                if recv_len < 4096:
+                    break
+
+            print response,
+
+            # Wait for more input
+            buffer= raw_input("")
+            buffer+= "\n"
+
+            # Send it off
+            client.send(buffer)
+
+    except:
+        print "[*] Exception! Exiting."
+
+        # Tear down the connection
+        client.close()
+
+# Server loop, stub fx to handle cmd exe and cmd shell
+def server_loop():
+    global target
+
+    # If no target defined, listen on all interfaces
+    if not len(target):
+        target = "0.0.0.0"
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((target,port))
+    server.lister(5)
+
+    while True:
+        client_socket, addr = server.accept()
+        # Spin off thread for new client
+        client_thread = threading.Thread(target=client_handler,args=(client_socket,))
+        client_thread.start()
+
+def run_command(command):
+    # Trim newline
+    command = command.rstrip()
+    # Run cmd and get output back
+    try:
+        output = subprocess.check_output(command,strderr=subprocess.STDOUT, shell=True)
+    except:
+        output = "Failed to execute command.\r\n"
+
+    # Send the output back to the client
+    return output
+                
+        
+    
+
 # Main function, handles CLI args and calling rest of functions
 def usage():
     print "BHP Net Tool"
