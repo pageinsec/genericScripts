@@ -1,0 +1,15 @@
+#!/bin/bash
+# Simple script to do a fping and nmap scan of a CIDR range
+# Rememberemember to chmod u+x to make executable
+# Get range to scan
+echo Enter IP range to scan in CIDR notation
+read range
+
+# Run fping scan and save to file
+fping -a -g $range 2>/dev/null > /root/Documents/basicScanresultsesults.txt
+
+# Run nmap scan and append to file
+nmap -O -sV $range >> /root/Documents/basicScanresultsesults.txt
+
+echo Results can be found at /root/Documents/basicScanresultsesults.txt
+echo You should save the results as a unique file if you need to keep them.
