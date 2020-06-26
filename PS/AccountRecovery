@@ -70,7 +70,7 @@ Function Reset-User
         if ($check -eq 'Y')
         {
             $pwd = New-SecurePassword
-            Get-AzureADUser -ObjectId "$user@kleinisd.net" | Revoke-AzureADUserAllRefreshToken
+            Get-AzureADUser -ObjectId "$user@DOMAIN" | Revoke-AzureADUserAllRefreshToken
             Set-ADAccountPassword -Identity $user -Reset -NewPassword ($pwd | ConvertTo-SecureString -AsPlainText -Force)
             #$reason = Read-Host -Prompt 'Reason for lockout: '
             # Update details for environment
