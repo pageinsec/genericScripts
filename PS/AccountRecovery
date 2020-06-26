@@ -81,5 +81,25 @@ Function Reset-User
             echo 'Reset cancelled'
         }
 
+    }   
+}
+
+#Revoke Azure AD sessions, use with Set-Password if walking a user through account reset
+Function Revoke-AD
+{
+    Connect-AzureAD
+    $user = Read-Host -Prompt 'Enter user name: '
+    $username = Get-ADUser -Identity $user -Properties * | Select DisplayName
+    Write-Host "User - "$username.DisplayName
+    Write-Host "Revoke Azure AD sessions for - $user"
+    $check = Read-Host -Prompt 'y or n'
+    if ($check -eq 'y')
+    {
+        Get-AzureADUser -ObjectId "$user@DOMAIN" | Revoke-AzureADUserAllRefreshToken
+        Write-Host "Azure AD sessions for "$username.DisplayName" - "$user" revoked."
+    }
+    else
+    {
+        Write-Host "Azure AD sessions for "$username.DisplayName" - "$user" not revoked."
     }
 }
