@@ -1,0 +1,13 @@
+# Quick script to check health of Elastic indices
+# Using echo for line spacing (basically being lazy)
+#!/bin/bash
+echo
+echo "Disk Info:"
+df -h
+echo
+echo "Elastic Read Only Delete Info:"
+curl -XGET http://IP:9200/_all/_settings?'pretty' | grep read_only_allow_delete
+echo
+echo "Current Journal Size:"
+du -h /var/lib/graylog-server/
+echo
